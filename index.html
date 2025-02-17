@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Data Interaction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+        }
+
+        .response pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .response.error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .response.success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Student Data Interaction</h1>
+
+        <!-- Form to Post Student Data -->
+        <div class="form-group">
+            <h2>Post Student Data</h2>
+            <label for="studentid">Student ID</label>
+            <input type="text" id="studentid" placeholder="Enter Student ID">
+            
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Enter Name">
+            
+            <label for="class">Class</label>
+            <input type="text" id="class" placeholder="Enter Class">
+            
+            <label for="age">Age</label>
+            <input type="text" id="age" placeholder="Enter Age">
+            
+            <button onclick="postStudentData()">Post Student Data</button>
+        </div>
+
+        <!-- Form to Get All Students -->
+        <div class="form-group">
+            <h2>Get All Students</h2>
+            <button onclick="getStudentData()">Get Student Data</button>
+        </div>
+
+        <!-- Response Display Area -->
+        <div class="response" id="response"></div>
+    </div>
+
+    <script>
+        const postUrl = 'https://r1ag5a5yql.execute-api.us-east-2.amazonaws.com/newstage/';
+        const getUrl = 'https://r1ag5a5yql.execute-api.us-east-2.amazonaws.com/newstage/getStudent';
+
+        // Post Student Data
+        function postStudentData() {
+            const studentid = document.getElementById('studentid').value;
+            const name = document.getElementById('name').value;
+            const className = document.getElementById('class').value;
+            const age = document.getElementById('age').value;
+
+            const studentData = {
+                studentid: studentid,
+                name: name,
+                class: className,
+                age: age
+            };
+
+            fetch(postUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(studentData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayResponse(data, 'success');
+            })
+            .catch(error => {
+                displayResponse({ error: 'Error posting data' }, 'error');
+            });
+        }
+
+        // Get Student Data
+        function getStudentData() {
+            fetch(getUrl)
+                .then(response => response.json())
+                .then(data => {
+                    displayResponse(data, 'success');
+                })
+                .catch(error => {
+                    displayResponse({ error: 'Error retrieving data' }, 'error');
+                });
+        }
+
+        // Display Response
+        function displayResponse(data, type) {
+            const responseElement = document.getElementById('response');
+            responseElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+            if (type === 'success') {
+                responseElement.classList.remove('error');
+                responseElement.classList.add('success');
+            } else {
+                responseElement.classList.remove('success');
+                responseElement.classList.add('error');
+            }
+        }
+    </script>
+
+</body>
+</html>
