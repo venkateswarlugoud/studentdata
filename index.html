@@ -148,7 +148,10 @@
 
         // Get Student Data
         function getStudentData() {
-            fetch(getUrl)
+            fetch(getUrl,{
+                method:"GET",
+                headers:none
+            })
                 .then(response => response.json())
                 .then(data => {
                     displayResponse(data, 'success');
