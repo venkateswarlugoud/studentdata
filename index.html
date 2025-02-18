@@ -114,7 +114,7 @@
 
     <script>
         const postUrl = 'https://r1ag5a5yql.execute-api.us-east-2.amazonaws.com/newstage/';
-        const getUrl = 'https://r1ag5a5yql.execute-api.us-east-2.amazonaws.com/newstage/getStudent';
+        const getUrl = 'https://r1ag5a5yql.execute-api.us-east-2.amazonaws.com/newstage/getStudent/';
 
         // Post Student Data
         function postStudentData() {
@@ -149,8 +149,7 @@
         // Get Student Data
         function getStudentData() {
             fetch(getUrl,{
-                method:"GET",
-                headers:none
+                method:"GET"
             })
                 .then(response => response.json())
                 .then(data => {
