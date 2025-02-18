@@ -60,12 +60,6 @@
             border: 1px solid #ccc;
         }
 
-        .response pre {
-            margin: 0;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
         .response.error {
             background-color: #f8d7da;
             border-color: #f5c6cb;
@@ -76,6 +70,25 @@
             background-color: #d4edda;
             border-color: #c3e6cb;
             color: #155724;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
         }
     </style>
 </head>
@@ -148,8 +161,8 @@
 
         // Get Student Data
         function getStudentData() {
-            fetch(getUrl,{
-                method:"GET"
+            fetch(getUrl, {
+                method: "GET"
             })
                 .then(response => response.json())
                 .then(data => {
@@ -160,10 +173,10 @@
                 });
         }
 
-        // Display Response
+        // Display Response in Table
         function displayResponse(data, type) {
             const responseElement = document.getElementById('response');
-            responseElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            responseElement.innerHTML = '';
 
             if (type === 'success') {
                 responseElement.classList.remove('error');
@@ -171,6 +184,29 @@
             } else {
                 responseElement.classList.remove('success');
                 responseElement.classList.add('error');
+            }
+
+            if (Array.isArray(data) && data.length > 0) {
+                let table = '<table><thead><tr>';
+                // Create table headers
+                Object.keys(data[0]).forEach(key => {
+                    table += `<th>${key}</th>`;
+                });
+                table += '</tr></thead><tbody>';
+
+                // Populate table rows
+                data.forEach(item => {
+                    table += '<tr>';
+                    Object.values(item).forEach(value => {
+                        table += `<td>${value}</td>`;
+                    });
+                    table += '</tr>';
+                });
+
+                table += '</tbody></table>';
+                responseElement.innerHTML = table;
+            } else {
+                responseElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
             }
         }
     </script>
