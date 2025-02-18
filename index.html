@@ -174,28 +174,35 @@
         }
 
         // Display Response in Table
-        function displayResponse(data, type) {
-            const responseElement = document.getElementById('response');
-            responseElement.innerHTML = '';
+// Display Response in Table
+function displayResponse(data, type) {
+    const responseElement = document.getElementById('response');
+    responseElement.innerHTML = '';
 
-            if (type === 'success') {
-                responseElement.classList.remove('error');
-                responseElement.classList.add('success');
-            } else {
-                responseElement.classList.remove('success');
-                responseElement.classList.add('error');
-            }
+    if (type === 'success') {
+        responseElement.classList.remove('error');
+        responseElement.classList.add('success');
+    } else {
+        responseElement.classList.remove('success');
+        responseElement.classList.add('error');
+    }
 
-            if (Array.isArray(data) && data.length > 0) {
+    // Check if the data is a valid response with the 'body' property
+    if (data.body) {
+        try {
+            // Parse the 'body' string into a JavaScript array
+            const parsedData = JSON.parse(data.body);
+
+            if (Array.isArray(parsedData) && parsedData.length > 0) {
                 let table = '<table><thead><tr>';
-                // Create table headers
-                Object.keys(data[0]).forEach(key => {
+                // Create table headers based on the keys of the first object
+                Object.keys(parsedData[0]).forEach(key => {
                     table += `<th>${key}</th>`;
                 });
                 table += '</tr></thead><tbody>';
 
                 // Populate table rows
-                data.forEach(item => {
+                parsedData.forEach(item => {
                     table += '<tr>';
                     Object.values(item).forEach(value => {
                         table += `<td>${value}</td>`;
@@ -206,9 +213,16 @@
                 table += '</tbody></table>';
                 responseElement.innerHTML = table;
             } else {
-                responseElement.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                responseElement.innerHTML = '<p>No student data found.</p>';
             }
+        } catch (e) {
+            responseElement.innerHTML = '<p>Error parsing the response body.</p>';
         }
+    } else {
+        responseElement.innerHTML = '<p>No data available.</p>';
+    }
+}
+
     </script>
 
 </body>
